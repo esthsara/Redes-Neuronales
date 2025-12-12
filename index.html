@@ -1,20 +1,344 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
-    <title>CNN 3D Visualizer</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 CNN 3D Visualizer - Red Neuronal Convolucional</title>
     <style>
-        body { margin: 0; overflow: hidden; }
-        #container { width: 100vw; height: 100vh; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f0f15;
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        #container {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        /* PANEL DE CONTROLES EN LA PARTE SUPERIOR */
+        .controls-panel {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            max-width: 90%;
+            min-height: 40px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(79, 195, 247, 0.2);
+        }
+        
+        .panel-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #4FC3F7;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .panel-title span {
+            font-size: 18px;
+        }
+        
+        /* Botón principal */
+        .btn-primary {
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.4);
+        }
+        
+        /* Botones secundarios */
+        .btn-secondary {
+            padding: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Estado de animación */
+        .status-display {
+            padding: 6px 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 6px;
+            font-size: 11px;
+            color: #aaa;
+            min-width: 120px;
+            text-align: center;
+            border-left: 3px solid #4CAF50;
+        }
+        
+        .status-display.active {
+            color: #4CAF50;
+            border-left-color: #4CAF50;
+        }
+        
+        /* Controles de cámara (pequeños) */
+        .camera-controls {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .camera-btn {
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 10px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .camera-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Slider de velocidad */
+        .speed-slider {
+            width: 60px;
+            height: 4px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            outline: none;
+            margin: 0 6px;
+        }
+        
+        .speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4FC3F7;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+        
+        /* Leyenda de capas (opcional, solo si caben) */
+        .layers-legend {
+            display: none; /* Oculto por defecto, se puede mostrar en pantallas grandes */
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .controls-panel {
+                padding: 8px 10px;
+                gap: 8px;
+            }
+            
+            .btn-primary {
+                padding: 4px 8px;
+                font-size: 10px;
+            }
+            
+            .camera-btn {
+                padding: 3px 6px;
+                font-size: 9px;
+            }
+            
+            .status-display {
+                min-width: 80px;
+                font-size: 10px;
+            }
+        }
     </style>
 </head>
 <body>
-  <div id="container"></div>
-  <!--aqui iran los botones para moverse pero todabi ano pondremos ninguni-->
-
-  <!-- Scripts en orden correcto -->
-  <script src="lib/three.min.js"></script>
-  <script src="lib/OrbitControls.js"></script>
-  <script src="lib/dat.gui.min.js"></script>
-  <script src="script.js"></script>
+    <!-- Contenedor principal de Three.js -->
+    <div id="container"></div>
+    
+    <!-- PANEL DE CONTROLES EN LA PARTE SUPERIOR -->
+    <div class="controls-panel">
+        <div class="panel-title">
+            <span>CNN 3D</span>
+        </div>
+        
+        <button id="start-classification" class="btn-primary">
+            <span>Iniciar</span>
+        </button>
+        
+        <div class="camera-controls">
+            <button id="camera-up" class="camera-btn">↑</button>
+            <button id="camera-down" class="camera-btn">↓</button>
+            <button id="camera-left" class="camera-btn">←</button>
+            <button id="camera-right" class="camera-btn">→</button>
+            <button id="camera-center" class="camera-btn">◎</button>
+            <button id="zoom-in" class="camera-btn">+</button>
+            <button id="zoom-out" class="camera-btn">-</button>
+        </div>
+        
+        <div class="status-display" id="resultado">
+            Esperando...
+        </div>
+        
+        <input type="range" id="speed-slider" class="speed-slider" min="0.5" max="3" step="0.5" value="1">
+        
+        <button id="info-btn" class="btn-secondary">info</button>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="lib/three.min.js"></script>
+    <script src="lib/OrbitControls.js"></script>
+    <script src="lib/dat.gui.min.js"></script>
+    <script src="script.js"></script>
+    
+    <script>
+        // Script para manejar los controles del HTML
+        document.addEventListener('DOMContentLoaded', function() {
+            window.CameraControls = {
+                moveStep: 1,
+                rotateStep: 0.1,
+                zoomStep: 0.5,
+                animationSpeed: 1
+            };
+            
+            // Actualizar indicador de estado
+            function updateStatusIndicator(isActive) {
+                const statusDisplay = document.getElementById('resultado');
+                if (isActive) {
+                    statusDisplay.textContent = "Procesando...";
+                    statusDisplay.classList.add('active');
+                } else {
+                    statusDisplay.textContent = "Esperando...";
+                    statusDisplay.classList.remove('active');
+                }
+            }
+            
+            // Control de velocidad
+            const speedSlider = document.getElementById('speed-slider');
+            speedSlider.addEventListener('input', function() {
+                CameraControls.animationSpeed = parseFloat(this.value);
+                if (window.DataFlowAnimator && window.DataFlowAnimator.updateAnimationSpeed) {
+                    window.DataFlowAnimator.updateAnimationSpeed(CameraControls.animationSpeed);
+                }
+            });
+            
+            // Botones de cámara
+            const cameraButtons = {
+                'camera-up': () => moveCamera(0, CameraControls.moveStep, 0),
+                'camera-down': () => moveCamera(0, -CameraControls.moveStep, 0),
+                'camera-left': () => moveCamera(-CameraControls.moveStep, 0, 0),
+                'camera-right': () => moveCamera(CameraControls.moveStep, 0, 0),
+                'camera-center': () => resetCamera(),
+                'zoom-in': () => zoomCamera(-CameraControls.zoomStep),
+                'zoom-out': () => zoomCamera(CameraControls.zoomStep)
+            };
+            
+            Object.keys(cameraButtons).forEach(buttonId => {
+                const button = document.getElementById(buttonId);
+                if (button) {
+                    button.addEventListener('click', cameraButtons[buttonId]);
+                }
+            });
+            
+            // Función para mover cámara
+            function moveCamera(x, y, z) {
+                if (window.State && window.State.camera) {
+                    window.State.camera.position.x += x;
+                    window.State.camera.position.y += y;
+                    window.State.camera.position.z += z;
+                    window.State.camera.updateProjectionMatrix();
+                }
+            }
+            
+            // Función para zoom
+            function zoomCamera(step) {
+                if (window.State && window.State.camera) {
+                    const direction = new THREE.Vector3();
+                    window.State.camera.getWorldDirection(direction);
+                    window.State.camera.position.addScaledVector(direction, step);
+                    window.State.camera.updateProjectionMatrix();
+                }
+            }
+            
+            // Función para resetear vista
+            function resetCamera() {
+                if (window.State && window.State.camera && window.State.controls) {
+                    window.State.camera.position.set(0, 5, 25);
+                    window.State.camera.lookAt(0, 0, 0);
+                    
+                    if (window.State.controls.target) {
+                        window.State.controls.target.set(0, 0, 0);
+                        window.State.controls.update();
+                    }
+                    
+                    window.State.camera.updateProjectionMatrix();
+                }
+            }
+            
+            // Botón info
+            document.getElementById('info-btn').addEventListener('click', function() {
+                alert(`CNN 3D Visualizer\n\nControles:\n• Click + arrastrar: Rotar vista\n• Rueda del mouse: Zoom\n• Botones: Movimiento manual\n\nArquitectura:\n• Input: 3 canales RGB\n• Conv1: 6 filtros 3x3\n• Feature Maps 1: 6 mapas\n• ReLU: Activación no lineal\n• Pooling 1: Reducción 2x2\n• Conv2: 12 filtros 3x3\n• Feature Maps 2: 12 mapas\n• Pooling 2: Reducción 2x2\n• Flatten: 12 neuronas\n• Fully Connected: 8 neuronas\n• Output: 3 clases`);
+            });
+            
+            // Botón de inicio
+            document.getElementById('start-classification').addEventListener('click', () => {
+                document.getElementById('resultado').textContent = "Procesando...";
+                if (window.DataFlowAnimator) {
+                    window.DataFlowAnimator.startAnimation();
+                }
+            });
+            
+            // Hacer controles accesibles globalmente
+            window.CameraControls = CameraControls;
+            window.updateStatusIndicator = updateStatusIndicator;
+            window.moveCamera = moveCamera;
+            window.zoomCamera = zoomCamera;
+            window.resetCamera = resetCamera;
+            
+            console.log('Controles HTML cargados correctamente');
+        });
+    </script>
 </body>
 </html>
