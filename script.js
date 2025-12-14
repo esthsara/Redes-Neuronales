@@ -25,7 +25,6 @@ const CONFIG = {
     SIGNAL_BLUE: 0x448AFF,
     CONNECTION: 0xaaaaaa
   },
-  
   LAYER_SIZES: {
     INPUT_CHANNEL: { width: 3, height: 3, depth: 0.3 },
     KERNEL: { width: 0.6, height: 0.6, depth: 0.1 },
@@ -39,16 +38,13 @@ const CONFIG = {
     FC_NEURON: { radius: 0.15 },
     OUTPUT: { width: 1.2, height: 0.6, depth: 0.2 }
   },
-  
   LAYER_POSITIONS: {
     INPUT_CHANNELS: [
       { x: -15, y: 0, z: -0.8 },
       { x: -15, y: 0, z: 0 },
       { x: -15, y: 0, z: 0.8 }
     ],
-    
     KERNEL: { x: -14, y: 0, z: 0 },
-    
     CONV1_FILTERS: [
       { x: -11, y: 0, z: -1.5 },
       { x: -11, y: 0, z: -0.9 },
@@ -114,7 +110,6 @@ const CONFIG = {
       { x: 1, y: 0, z: 1.8 },
       { x: 1, y: 0, z: 2.7 }
     ],
-    
     POOL_2: [
       { x: 3, y: 0, z: -2.1 },
       { x: 3, y: 0, z: -1.5 },
@@ -129,33 +124,45 @@ const CONFIG = {
       { x: 3, y: 0, z: 1.8 },
       { x: 3, y: 0, z: 2.7 }
     ],
-    
     FLATTEN_GRID: Array.from({length: 12}, (_, i) => ({
       x: 5 + Math.floor(i / 3) * 0.6,
       y: (i % 3 - 1) * 0.6,
       z: 0
     })),
-    
-    FC_NEURONS: [
-      { x: 7, y: -1.2, z: 0 },
-      { x: 7, y: -0.8, z: 0 },
-      { x: 7, y: -0.4, z: 0 },
-      { x: 7, y: 0, z: 0 },
-      { x: 7, y: 0.4, z: 0 },
-      { x: 7, y: 0.8, z: 0 },
-      { x: 7, y: 1.2, z: 0 },
-      { x: 7, y: 1.6, z: 0 }
-    ],
-    
+    FC_COLUMNS: {
+      // Columna 1: 11 neuronas 
+      COL1: Array.from({length: 11}, (_, i) => ({
+        x: 8,
+        y: (i - 5) * 0.45,  
+        z: 0
+      })),
+      // Columna 2: 7 neuronas 
+      COL2: Array.from({length: 7}, (_, i) => ({
+        x: 9,  
+        y: (i - 3) * 0.45,  
+        z: 0
+      })),
+      // Columna 3: 5 neuronas
+      COL3: Array.from({length: 5}, (_, i) => ({
+        x: 10,  
+        y: (i - 2) * 0.45,  
+        z: 0
+      })),
+      // Columna 4: 3 neuronas
+      COL4: Array.from({length: 3}, (_, i) => ({
+        x: 11,  
+        y: (i - 1) * 0.45,  
+        z: 0
+      }))
+    },
+ 
     OUTPUT_CLASSES: [
-      { x: 9, y: -0.8, z: 0 },
-      { x: 9, y: 0, z: 0 },
-      { x: 9, y: 0.8, z: 0 }
+      { x: 13, y: -0.8, z: 0 },  
+      { x: 13, y: 0, z: 0 },    
+      { x: 13, y: 0.8, z: 0 }   
     ]
   },
-  
   OUTPUT_LABELS: ["Horse", "Zebra", "Dog"],
-  
   ACTIVATION: {
     SIZE: { width: 0.15, height: 1, depth: 0.08 }
   }
@@ -178,14 +185,16 @@ const State = {
     featureMaps2: [],
     pool2: [],
     flatten: [],
-    fcNeurons: [],
+    fcColumn1: [],  // 11 neuronas
+    fcColumn2: [],  // 7 neuronas
+    fcColumn3: [],  // 5 neuronas
+    fcColumn4: [],  // 3 neuronas
     outputClasses: []
   },
   connections: [],
   signals: [],
   htmlLabels: []
 };
-
 // ======== MÓDULO DE CREACIÓN DE ETIQUETAS HTML ========
 const LabelModule = {
   createHTMLLabel(text, position3D, className = 'layer-label') {
@@ -249,7 +258,6 @@ const LabelModule = {
     });
   }
 };
-
 // ======== MÓDULO DE CREACIÓN DE CAPAS ========
 const LayerBuilder = {
   createAllLayers() {
@@ -486,11 +494,13 @@ const LayerBuilder = {
 
   createFullyConnectedSection() {
     LabelModule.createHTMLLabel("FULLY CONNECTED", 
-      { x: 7, y: 2.5, z: 0 }, 
+      { x: 8.5, y: 3, z: 0 },  // Ajustar posición Y para mayor espacio
       'section-label'
     );
     
-    CONFIG.LAYER_POSITIONS.FC_NEURONS.forEach((position, index) => {
+
+    // Crear Columna 1: 11 neuronas
+    CONFIG.LAYER_POSITIONS.FC_COLUMNS.COL1.forEach((position, index) => {
       const neuron = new THREE.Mesh(
         new THREE.SphereGeometry(CONFIG.LAYER_SIZES.FC_NEURON.radius, 12, 12),
         new THREE.MeshPhongMaterial({ 
@@ -500,13 +510,55 @@ const LayerBuilder = {
       );
       neuron.position.set(position.x, position.y, position.z);
       State.scene.add(neuron);
-      State.layers.fcNeurons.push(neuron);
+      State.layers.fcColumn1.push(neuron);
+    });
+    
+    // Crear Columna 2: 7 neuronas
+    CONFIG.LAYER_POSITIONS.FC_COLUMNS.COL2.forEach((position, index) => {
+      const neuron = new THREE.Mesh(
+        new THREE.SphereGeometry(CONFIG.LAYER_SIZES.FC_NEURON.radius, 12, 12),
+        new THREE.MeshPhongMaterial({ 
+          color: CONFIG.COLORS.FC_LAYER,
+          shininess: 100
+        })
+      );
+      neuron.position.set(position.x, position.y, position.z);
+      State.scene.add(neuron);
+      State.layers.fcColumn2.push(neuron);
+    });
+    
+    // Crear Columna 3: 5 neuronas
+    CONFIG.LAYER_POSITIONS.FC_COLUMNS.COL3.forEach((position, index) => {
+      const neuron = new THREE.Mesh(
+        new THREE.SphereGeometry(CONFIG.LAYER_SIZES.FC_NEURON.radius, 12, 12),
+        new THREE.MeshPhongMaterial({ 
+          color: CONFIG.COLORS.FC_LAYER,
+          shininess: 100
+        })
+      );
+      neuron.position.set(position.x, position.y, position.z);
+      State.scene.add(neuron);
+      State.layers.fcColumn3.push(neuron);
+    });
+    
+    // Crear Columna 4: 3 neuronas
+    CONFIG.LAYER_POSITIONS.FC_COLUMNS.COL4.forEach((position, index) => {
+      const neuron = new THREE.Mesh(
+        new THREE.SphereGeometry(CONFIG.LAYER_SIZES.FC_NEURON.radius, 12, 12),
+        new THREE.MeshPhongMaterial({ 
+          color: CONFIG.COLORS.FC_LAYER,
+          shininess: 100
+        })
+      );
+      neuron.position.set(position.x, position.y, position.z);
+      State.scene.add(neuron);
+      State.layers.fcColumn4.push(neuron);
     });
   },
 
   createOutputSection() {
     LabelModule.createHTMLLabel("OUTPUT LAYER", 
-      { x: 9, y: 2, z: 0 }, 
+      { x: 13, y: 2, z: 0 }, 
       'section-label'
     );
     
@@ -591,18 +643,52 @@ const LayerBuilder = {
         this.createConnection(pool, State.layers.flatten[index]);
       }
     });
+    // ======== CONEXIONES FULLY CONNECTED (4 CAPAS) ========
     
+    // Conexiones: Flatten → Columna 1 (12 flatten → 11 neuronas)
     State.layers.flatten.forEach(flatten => {
-      State.layers.fcNeurons.forEach(neuron => {
+      State.layers.fcColumn1.forEach(neuron => {
         this.createConnection(flatten, neuron);
       });
     });
     
-    State.layers.fcNeurons.forEach(neuron => {
-      State.layers.outputClasses.forEach(output => {
-        this.createConnection(neuron, output);
+    // Conexiones BIDIRECCIONALES entre columnas adyacentes
+    // Columna 1 ↔ Columna 2
+    State.layers.fcColumn1.forEach(neuron1 => {
+      State.layers.fcColumn2.forEach(neuron2 => {
+        this.createConnection(neuron1, neuron2);
       });
     });
+    
+    // Columna 2 ↔ Columna 3 
+    State.layers.fcColumn2.forEach(neuron1 => {
+      State.layers.fcColumn3.forEach(neuron2 => {
+        this.createConnection(neuron1, neuron2);
+      });
+    });
+    
+    // Columna 3 ↔ Columna 4 
+    State.layers.fcColumn3.forEach(neuron1 => {
+      State.layers.fcColumn4.forEach(neuron2 => {
+        this.createConnection(neuron1, neuron2);
+      });
+    });
+    
+    // ======== CONEXIONES DIRECTAS COL4 ========
+    // Bolita superior  -> HORSE 
+    if (State.layers.fcColumn4[0] && State.layers.outputClasses[0]) {
+      this.createConnection(State.layers.fcColumn4[0], State.layers.outputClasses[0]);
+    }
+    
+    // Bolita medio  -> ZEBRA  
+    if (State.layers.fcColumn4[1] && State.layers.outputClasses[1]) {
+      this.createConnection(State.layers.fcColumn4[1], State.layers.outputClasses[1]);
+    }
+    
+    // Bolita inferior  -> DOG 
+    if (State.layers.fcColumn4[2] && State.layers.outputClasses[2]) {
+      this.createConnection(State.layers.fcColumn4[2], State.layers.outputClasses[2]);
+    }
   },
 
   createConnection(from, to, color = CONFIG.COLORS.CONNECTION) {
@@ -623,7 +709,6 @@ const LayerBuilder = {
     State.connections.push(line);
   }
 };
-
 // ======== MÓDULO DE ANIMACIÓN DE DATOS ========
 const DataFlowAnimator = {
   isAnimating: false,
@@ -806,20 +891,36 @@ const DataFlowAnimator = {
     if (State.layers.pool2[conv2FilterIndex]) {
       path.push(State.layers.pool2[conv2FilterIndex].position.clone());
     }
-    
+
     if (State.layers.flatten[conv2FilterIndex]) {
       path.push(State.layers.flatten[conv2FilterIndex].position.clone());
     }
     
-    const fcIndex = Math.floor(Math.random() * State.layers.fcNeurons.length);
-    if (State.layers.fcNeurons[fcIndex]) {
-      path.push(State.layers.fcNeurons[fcIndex].position.clone());
+    // ======== NUEVA RUTA PARA LAS 4 CAPAS FULLY CONNECTED ========
+    // El flujo pasa por UNA neurona aleatoria de cada columna
+    const col1Index = Math.floor(Math.random() * State.layers.fcColumn1.length);
+    if (State.layers.fcColumn1[col1Index]) {
+      path.push(State.layers.fcColumn1[col1Index].position.clone());
+    }
+    
+    const col2Index = Math.floor(Math.random() * State.layers.fcColumn2.length);
+    if (State.layers.fcColumn2[col2Index]) {
+      path.push(State.layers.fcColumn2[col2Index].position.clone());
+    }
+    
+    const col3Index = Math.floor(Math.random() * State.layers.fcColumn3.length);
+    if (State.layers.fcColumn3[col3Index]) {
+      path.push(State.layers.fcColumn3[col3Index].position.clone());
+    }
+    
+    const col4Index = Math.floor(Math.random() * State.layers.fcColumn4.length);
+    if (State.layers.fcColumn4[col4Index]) {
+      path.push(State.layers.fcColumn4[col4Index].position.clone());
     }
     
     if (State.layers.outputClasses[1]) {
       path.push(State.layers.outputClasses[1].position.clone());
     }
-    
     return path;
   },
 
@@ -953,34 +1054,28 @@ const DataFlowAnimator = {
       this.activeParticles.splice(activeIndex, 1);
     }
   },
-
   resetOutputColors() {
     State.layers.outputClasses.forEach(output => {
       output.material.color.setHex(CONFIG.COLORS.OUTPUT_LAYER);
+      output.scale.setScalar(1);
     });
-  },
-
-  showFinalResult() {
-    if (State.layers.outputClasses[1]) {
-      const zebraOutput = State.layers.outputClasses[1];
-      zebraOutput.material.color.setHex(0x00FF00);
-      
-      let pulseTime = 0;
-      const pulse = () => {
-        pulseTime += 0.05;
-        const intensity = 0.5 + 0.5 * Math.sin(pulseTime);
-        zebraOutput.scale.setScalar(1 + intensity * 0.1);
-        
-        if (pulseTime < 5) {
-          requestAnimationFrame(pulse);
-        } else {
-          zebraOutput.scale.setScalar(1);
-        }
-      };
-      pulse();
-    }
     
-    this.updateUI("<strong>✅ CLASIFICACIÓN COMPLETA:</strong><br>La imagen ha sido identificada como <span style='color:#00FF00; font-weight:bold;'>ZEBRA</span> 🦓");
+    // Resetear secuencia de activación
+    ActivationSequence.resetAll();
+  },
+  
+  showFinalResult() {
+    // 1. Iniciar secuencia de activación
+    ActivationSequence.runSequence();
+    
+    // 3. Actualizar UI
+    this.updateUI("<strong> CLASIFICACIÓN COMPLETA:</strong><br>La imagen ha sido identificada como <span style='color:#00FF00; font-weight:bold;'>ZEBRA</span> 🦓<br><small>Secuencia de activación: Col1 → Col2 → Col3 → Col4 → Output</small>");
+    
+    // 4. Marcar animación como completada después de la secuencia
+    setTimeout(() => {
+      this.isAnimating = false;
+      this.updateStatusIndicator(false);
+    },  10000);
   },
 
   updateUI(text) {
@@ -990,8 +1085,171 @@ const DataFlowAnimator = {
     }
   }
 };
-
-// ======== MÓDULO DE INICIALIZACIÓN ========// ======== MÓDULO DE INICIALIZACIÓN ========
+// ======== MÓDULO DE ACTIVACIÓN SECUENCIAL DE LUCES DE LA SECCION DE BOLITAS========
+const ActivationSequence = {
+  //definicion del color que cambiara cada neurona al activarse
+  ACTIVATION_COLOR: 0xFFD700,
+  // Neuronas fijas que se activarán en cada columna
+  FIXED_NEURONS: {
+    COL1: 8,  
+    COL2: 1, 
+    COL3: 4,  
+    COL4: 1,  
+    OUTPUT: 1
+  },
+  // Material original de las neuronas (para restaurar)
+  originalMaterials: new Map(),
+  
+  // Activar una neurona específica
+  activateNeuron(columnArray, index, color = this.ACTIVATION_COLOR) {
+    if (!columnArray || !columnArray[index]) return;
+    
+    const neuron = columnArray[index];
+    
+    // Guardar material original si no está guardado
+    if (!this.originalMaterials.has(neuron)) {
+      this.originalMaterials.set(neuron, {
+        color: neuron.material.color.getHex(),
+        shininess: neuron.material.shininess
+      });
+    }
+    
+    // Cambiar a color de activación
+    neuron.material.color.setHex(color);
+    neuron.material.shininess = 150; 
+    
+    // Efecto de pulso
+    neuron.userData = neuron.userData || {};
+    neuron.userData.isActivated = true;
+    neuron.userData.pulseTime = 0;
+  },
+  
+  // Desactivar una neurona (volver al color original)
+  deactivateNeuron(columnArray, index) {
+    if (!columnArray || !columnArray[index]) return;
+    
+    const neuron = columnArray[index];
+    const original = this.originalMaterials.get(neuron);
+    
+    if (original) {
+      neuron.material.color.setHex(original.color);
+      neuron.material.shininess = original.shininess;
+    } else {
+      // Si no hay original, volver al color morado por defecto
+      neuron.material.color.setHex(CONFIG.COLORS.FC_LAYER);
+      neuron.material.shininess = 100;
+    }
+    
+    if (neuron.userData) {
+      neuron.userData.isActivated = false;
+    }
+  },
+  
+  // Ejecutar secuencia completa de activación
+  runSequence() {
+    // Secuencia con delays (500ms entre cada paso)
+    // Paso 1: Activar Columna 1
+    setTimeout(() => {
+      console.log(" Paso 1: Activando Col1[5]");
+      this.activateNeuron(State.layers.fcColumn1, this.FIXED_NEURONS.COL1);
+    }, 500);
+    
+    // Paso 2: Desactivar Col1 y activar Col2
+    setTimeout(() => {
+      console.log(" Paso 2: Col1[5] → OFF, Col2[3] → ON");
+      this.deactivateNeuron(State.layers.fcColumn1, this.FIXED_NEURONS.COL1);
+      this.activateNeuron(State.layers.fcColumn2, this.FIXED_NEURONS.COL2);
+    }, 1000);
+    
+    // Paso 3: Desactivar Col2 y activar Col3
+    setTimeout(() => {
+      console.log(" Paso 3: Col2[3] → OFF, Col3[2] → ON");
+      this.deactivateNeuron(State.layers.fcColumn2, this.FIXED_NEURONS.COL2);
+      this.activateNeuron(State.layers.fcColumn3, this.FIXED_NEURONS.COL3);
+    }, 1500);
+    
+    // Paso 4: Desactivar Col3 y activar Col4
+    setTimeout(() => {
+       console.log(" Paso 4: Col3[2] → OFF, Col4[1] → ON");
+      this.deactivateNeuron(State.layers.fcColumn3, this.FIXED_NEURONS.COL3);
+      this.activateNeuron(State.layers.fcColumn4, this.FIXED_NEURONS.COL4);
+    }, 2000);
+    
+    // Paso 5: Desactivar Col4 y activar Output (ZEBRA)
+    setTimeout(() => {
+      console.log(" Paso 5: Col4[1] → OFF, Output[1] (ZEBRA) → ON");
+      this.deactivateNeuron(State.layers.fcColumn4, this.FIXED_NEURONS.COL4);
+      this.activateOutput();
+    }, 2500);
+  },
+  
+  // Activar el output (ZEBRA)
+  activateOutput() {
+    const zebraOutput = State.layers.outputClasses[this.FIXED_NEURONS.OUTPUT];
+    if (zebraOutput) {
+      // Guardar color original
+      if (!this.originalMaterials.has(zebraOutput)) {
+        this.originalMaterials.set(zebraOutput, {
+          color: zebraOutput.material.color.getHex(),
+          opacity: zebraOutput.material.opacity
+        });
+      }
+      
+      // Cambiar a color de activación (dorado)
+      zebraOutput.material.color.setHex(this.ACTIVATION_COLOR);
+      zebraOutput.material.opacity = 1.0;
+      
+      // CORRECCIÓN: Para BoxGeometry, escala es un Vector3, no tiene setScalar
+      let pulseTime = 0;
+      const originalScale = { 
+        x: zebraOutput.scale.x, 
+        y: zebraOutput.scale.y, 
+        z: zebraOutput.scale.z 
+      };
+      
+      const pulse = () => {
+        pulseTime += 0.05;
+        const intensity = 0.5 + 0.5 * Math.sin(pulseTime);
+        const scale = 1 + intensity * 0.15;
+        
+        // Usar .scale.set() en lugar de .scale.setScalar()
+        zebraOutput.scale.set(scale, scale, scale);
+        
+        if (pulseTime < 8) {
+          requestAnimationFrame(pulse);
+        } else {
+          // Restaurar escala original
+          zebraOutput.scale.set(originalScale.x, originalScale.y, originalScale.z);
+        }
+      };
+      pulse();
+    }
+  },
+  
+  // Resetear todas las activaciones
+  resetAll() {
+    // Resetear neuronas FC
+    [State.layers.fcColumn1, State.layers.fcColumn2, State.layers.fcColumn3, State.layers.fcColumn4].forEach(column => {
+      if (column) {
+        column.forEach((neuron, index) => {
+          this.deactivateNeuron(column, index);
+        });
+      }
+    });
+    
+    // Resetear outputs - CORRECCIÓN: los outputs son BoxGeometry, no SphereGeometry
+    State.layers.outputClasses.forEach((output, index) => {
+      const original = this.originalMaterials.get(output);
+      if (original) {
+        output.material.color.setHex(original.color);
+        output.material.opacity = original.opacity;
+      }
+      // Para BoxGeometry, usar .scale.set(1, 1, 1) en lugar de .scale.setScalar(1)
+      output.scale.set(1, 1, 1);
+    });
+  }
+};
+// ======== MÓDULO DE INICIALIZACIÓN ========
 const InitializationModule = {
   init() {
     this.createScene();
@@ -1093,7 +1351,6 @@ const InitializationModule = {
     LabelModule.updateHTMLLabelsPosition();
   }
 };
-
 // ======== MÓDULO DE ANIMACIÓN PRINCIPAL ========
 const AnimationLoop = {
   clock: new THREE.Clock(),
@@ -1134,20 +1391,66 @@ const AnimationLoop = {
         }
       });
     }
-    
-    if (State.layers.fcNeurons) {
-      State.layers.fcNeurons.forEach((neuron, index) => {
+    // ======== ANIMACIÓN DE LAS 4 COLUMNAS FULLY CONNECTED ========
+    if (State.layers.fcColumn1) {
+      State.layers.fcColumn1.forEach((neuron, index) => {
         neuron.rotation.x += deltaTime * 0.2;
         neuron.rotation.y += deltaTime * 0.3;
       });
     }
     
+    if (State.layers.fcColumn2) {
+      State.layers.fcColumn2.forEach((neuron, index) => {
+        neuron.rotation.x += deltaTime * 0.25;
+        neuron.rotation.y += deltaTime * 0.35;
+      });
+    }
+    
+    if (State.layers.fcColumn3) {
+      State.layers.fcColumn3.forEach((neuron, index) => {
+        neuron.rotation.x += deltaTime * 0.3;
+        neuron.rotation.y += deltaTime * 0.4;
+      });
+    }
+
+    if (State.layers.fcColumn4) {
+      State.layers.fcColumn4.forEach((neuron, index) => {
+        neuron.rotation.x += deltaTime * 0.35;
+        neuron.rotation.y += deltaTime * 0.45;
+      });
+    }
+    // ======== LOOP AUTOMÁTICO DE ACTIVACIÓN SECUENCIAL (INFINITO) ========
+    if (window.ActivationSequence && !window.isSequenceRunning) {
+      window.isSequenceRunning = true;
+      console.log(" Iniciando loop infinito de activación secuencial...");
+      
+      // Función que se llama a sí misma infinitamente
+      const startInfiniteLoop = () => {
+        // Paso 1: Ejecutar secuencia
+        console.log(" Ciclo " + (window.sequenceCycle = (window.sequenceCycle || 0) + 1));
+        ActivationSequence.runSequence();
+        
+        // Paso 2: Esperar 8 segundos (3s secuencia + 5s pausa)
+        setTimeout(() => {
+          // Paso 3: Resetear todo
+          console.log(" Reseteando para próximo ciclo...");
+          ActivationSequence.resetAll();
+          
+          // Paso 4: Iniciar de nuevo inmediatamente
+          startInfiniteLoop();
+        }, 8000);
+      };
+      
+      // Iniciar después de 2 segundos
+      setTimeout(() => {
+        startInfiniteLoop();
+      }, 2000);
+    }
     if (State.renderer && State.scene && State.camera) {
       State.renderer.render(State.scene, State.camera);
     }
   }
 };
-
 // ======== MÓDULO DE INTERFAZ DE USUARIO ========
 const UIModule = {
   init() {
@@ -1178,7 +1481,6 @@ const UIModule = {
     // No necesita acción adicional aquí
   }
 };
-
 // ======== INICIALIZACIÓN DE LA APLICACIÓN ========
 class CNNVisualizer {
   constructor() {
@@ -1207,6 +1509,9 @@ class CNNVisualizer {
       window.State = State;
       window.DataFlowAnimator = DataFlowAnimator;
       window.CONFIG = CONFIG;
+      window.ActivationSequence = ActivationSequence; 
+      window.isSequenceRunning = false; 
+      window.sequenceCycle = 0; 
       
       console.log(' CNN 3D Visualizer inicializado correctamente');
       console.log(' Arquitectura:');
@@ -1217,7 +1522,7 @@ class CNNVisualizer {
       console.log('  • Conv2: 12 filtros → 12 feature maps');
       console.log('  • Pooling2: 12 capas');
       console.log('  • Flatten: 12 neuronas');
-      console.log('  • Fully Connected: 8 neuronas');
+      console.log('  • Fully Connected: 11→7→5→3 neuronas (4 capas)');
       console.log('  • Output: 3 clases');
       
       // Actualizar estado inicial
@@ -1255,7 +1560,6 @@ class CNNVisualizer {
     document.body.appendChild(errorDiv);
   }
 }
-
 // ======== INICIAR APLICACIÓN ========
 document.addEventListener('DOMContentLoaded', () => {
   // Estilos adicionales
@@ -1286,7 +1590,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   `;
   document.head.appendChild(style);
-  
-  // Iniciar la aplicación
   new CNNVisualizer();
 });
