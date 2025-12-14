@@ -1,8 +1,8 @@
 // ======== MÓDULO CONFIGURACIÓN ========
 const CONFIG = {
   COLORS: {
-    BACKGROUND: 0x333333,
-    INPUT_LAYER: 0x4FC3F7,
+    BACKGROUND: 0x333333,//color de fondo
+    INPUT_LAYER: 0x4FC3F7, 
     KERNEL: 0xFFFF00,
     INPUT_RED: 0xFF5252,
     INPUT_GREEN: 0x69F0AE,
@@ -13,38 +13,55 @@ const CONFIG = {
     CONV_FILTER_4: 0xFFE0B2,
     CONV_FILTER_5: 0xFFECB3,
     CONV_FILTER_6: 0xFFF8E1,
+    ///mapas de caracteriticas
     FEATURE_MAP: 0x4CAF50,
+    //SIMULACION DEL RELU
     RELU_ACTIVE: 0x00E676,
     RELU_INACTIVE: 0xFF5252,
+
     POOL_LAYER: 0xFFC107,
     FLATTEN_LAYER: 0x8BC34A,
+    //BOLITAS
     FC_LAYER: 0x9C27B0,
+    
     OUTPUT_LAYER: 0xE91E63,
+    
     SIGNAL_RED: 0xFF5252,
     SIGNAL_GREEN: 0x69F0AE,
     SIGNAL_BLUE: 0x448AFF,
-    CONNECTION: 0xaaaaaa
+    //lineas de conexion
+    CONNECTION: 0XFFFFFF
   },
+  
   LAYER_SIZES: {
+    //ANCHO , ALTO, GROSOR
     INPUT_CHANNEL: { width: 3, height: 3, depth: 0.3 },
-    KERNEL: { width: 0.6, height: 0.6, depth: 0.1 },
+    KERNEL: { width: 0.6, height: 0.6, depth: 0.5 },
+    //TAMAÑOS DE LOS FILTROS
     CONV1_FILTER: { width: 1.4, height: 1.5, depth: 0.3 },
     FEATURE_MAP_1: { width: 2, height: 2, depth: 0.2 },
     CONV2_FILTER: { width: 1.2, height: 1.2, depth: 0.25 },
     FEATURE_MAP_2: { width: 1.5, height: 1.5, depth: 0.18 },
+    //TAMAÑO DE LSO MASPA TRAS POLING
     POOL_1: { width: 1, height: 1, depth: 0.15 },
     POOL_2: { width: 0.8, height: 0.8, depth: 0.12 },
     FLATTEN: { width: 0.25, height: 0.25, depth: 0.1 },
+    //RADIO DE LAS BOLITAS O NEURONAS
     FC_NEURON: { radius: 0.15 },
-    OUTPUT: { width: 1.2, height: 0.6, depth: 0.2 }
+    //ETIQUETA DE SALIDA
+    OUTPUT: { width: 1.2, height: 0.6, depth: 0.5 }
   },
+  //TODAS LAS POSICIONES
   LAYER_POSITIONS: {
+    
     INPUT_CHANNELS: [
       { x: -15, y: 0, z: -0.8 },
       { x: -15, y: 0, z: 0 },
       { x: -15, y: 0, z: 0.8 }
     ],
-    KERNEL: { x: -14, y: 0, z: 0 },
+    
+    KERNEL: { x: -16, y: 0, z:0.8 },
+    
     CONV1_FILTERS: [
       { x: -11, y: 0, z: -1.5 },
       { x: -11, y: 0, z: -0.9 },
@@ -110,6 +127,7 @@ const CONFIG = {
       { x: 1, y: 0, z: 1.8 },
       { x: 1, y: 0, z: 2.7 }
     ],
+    
     POOL_2: [
       { x: 3, y: 0, z: -2.1 },
       { x: 3, y: 0, z: -1.5 },
@@ -124,47 +142,35 @@ const CONFIG = {
       { x: 3, y: 0, z: 1.8 },
       { x: 3, y: 0, z: 2.7 }
     ],
+    
     FLATTEN_GRID: Array.from({length: 12}, (_, i) => ({
-      x: 5 + Math.floor(i / 3) * 0.6,
-      y: (i % 3 - 1) * 0.6,
+      x: 5,             // todos en el mismo X
+      y: i * 0.3,       // avanza en Y
       z: 0
     })),
-    FC_COLUMNS: {
-      // Columna 1: 11 neuronas 
-      COL1: Array.from({length: 11}, (_, i) => ({
-        x: 8,
-        y: (i - 5) * 0.45,  
-        z: 0
-      })),
-      // Columna 2: 7 neuronas 
-      COL2: Array.from({length: 7}, (_, i) => ({
-        x: 9,  
-        y: (i - 3) * 0.45,  
-        z: 0
-      })),
-      // Columna 3: 5 neuronas
-      COL3: Array.from({length: 5}, (_, i) => ({
-        x: 10,  
-        y: (i - 2) * 0.45,  
-        z: 0
-      })),
-      // Columna 4: 3 neuronas
-      COL4: Array.from({length: 3}, (_, i) => ({
-        x: 11,  
-        y: (i - 1) * 0.45,  
-        z: 0
-      }))
-    },
- 
+    
+    FC_NEURONS: [
+      { x: 7, y: -1.2, z: 0 },
+      { x: 7, y: -0.8, z: 0 },
+      { x: 7, y: -0.4, z: 0 },
+      { x: 7, y: 0, z: 0 },
+      { x: 7, y: 0.4, z: 0 },
+      { x: 7, y: 0.8, z: 0 },
+      { x: 7, y: 1.2, z: 0 },
+      { x: 7, y: 1.6, z: 0 }
+    ],
+    
     OUTPUT_CLASSES: [
-      { x: 13, y: -0.8, z: 0 },  
-      { x: 13, y: 0, z: 0 },    
-      { x: 13, y: 0.8, z: 0 }   
+      { x: 9, y: -0.8, z: 0 },
+      { x: 9, y: 0, z: 0 },
+      { x: 9, y: 0.8, z: 0 }
     ]
   },
-  OUTPUT_LABELS: ["Horse", "Zebra", "Dog"],
+  
+  OUTPUT_LABELS: ["Caballo", "Cebra", "Perro"],
+  
   ACTIVATION: {
-    SIZE: { width: 0.15, height: 1, depth: 0.08 }
+    SIZE: { width: 0.35, height: 1, depth: 0.05 }
   }
 };
 
@@ -175,6 +181,8 @@ const State = {
   renderer: null,
   controls: null,
   layers: {
+    //LA ENTRADA
+    inputImage:[],
     inputChannels: [],
     kernel: null,
     conv1Filters: [],
@@ -185,18 +193,22 @@ const State = {
     featureMaps2: [],
     pool2: [],
     flatten: [],
-    fcColumn1: [],  // 11 neuronas
-    fcColumn2: [],  // 7 neuronas
-    fcColumn3: [],  // 5 neuronas
-    fcColumn4: [],  // 3 neuronas
+    fcNeurons: [],
     outputClasses: []
+    //CADA AARRAY  TIENE MESHES
   },
+  //AQUI TENGO LAS CONEXIONES O LINEAS
   connections: [],
+  //LAS ANIMACIONES
   signals: [],
+  //LOS LABELS TEXTOS
   htmlLabels: []
 };
+
 // ======== MÓDULO DE CREACIÓN DE ETIQUETAS HTML ========
+
 const LabelModule = {
+
   createHTMLLabel(text, position3D, className = 'layer-label') {
     const label = document.createElement('div');
     label.className = className;
@@ -220,7 +232,7 @@ const LabelModule = {
     
     return label;
   },
-
+  //CAMBIAMOS LAS COORDENADAS EN 3D
   updateHTMLLabelsPosition() {
     if (!State.htmlLabels.length || !State.camera) return;
     
@@ -243,14 +255,14 @@ const LabelModule = {
       label.style.top = `${y - 20}px`;
       
       if (label.className.includes('section')) {
-        label.style.color = '#FFFF00';
-        label.style.fontSize = '14px';
+        label.style.color = '#ff0000ff';
+        label.style.fontSize = '10px';
         label.style.background = 'rgba(0,0,0,0.8)';
         label.style.padding = '4px 8px';
         label.style.borderRadius = '4px';
       } else {
         label.style.color = '#FFFFFF';
-        label.style.fontSize = '11px';
+        label.style.fontSize = '8px';
         label.style.background = 'rgba(0,0,0,0.6)';
         label.style.padding = '2px 6px';
         label.style.borderRadius = '3px';
@@ -258,9 +270,11 @@ const LabelModule = {
     });
   }
 };
+
 // ======== MÓDULO DE CREACIÓN DE CAPAS ========
 const LayerBuilder = {
   createAllLayers() {
+    this.createInputPrin();
     this.createInputSection();
     this.createConvolution1Section();
     this.createActivationSection();
@@ -272,9 +286,33 @@ const LayerBuilder = {
     this.createOutputSection();
     this.createAllConnections();
   },
+  createInputPrin() {
+    // Label cerca del plano
+    LabelModule.createHTMLLabel("INPUT", 
+      { x: -19, y: 2, z: 0 }, 
+      'section-label'
+    );
+
+    // Plano con textura
+    const geometry = new THREE.PlaneGeometry(3, 3);
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load('http://localhost:3000/imagen/cebra.jpg'); // prueba con esta
+
+    const material = new THREE.MeshBasicMaterial({
+      map: texture,
+      side: THREE.DoubleSide
+    });
+
+    const plane = new THREE.Mesh(geometry, material);
+    plane.position.set(-19, 0, 0);
+    State.scene.add(plane);
+
+    State.layers.inputImage = plane;
+  },
+
 
   createInputSection() {
-    LabelModule.createHTMLLabel("INPUT LAYER", 
+    LabelModule.createHTMLLabel("CONVOLUCION", 
       { x: CONFIG.LAYER_POSITIONS.INPUT_CHANNELS[1].x, y: 2, z: 0 }, 
       'section-label'
     );
@@ -288,11 +326,12 @@ const LayerBuilder = {
     const channelNames = ["R", "G", "B"];
     
     CONFIG.LAYER_POSITIONS.INPUT_CHANNELS.forEach((position, index) => {
+      //AQUI CREAMOS EL CON OX GEOMETRY
       const channel = this.createBoxLayer(
-        CONFIG.LAYER_SIZES.INPUT_CHANNEL,
-        channelColors[index],
-        0.9,
-        position
+        CONFIG.LAYER_SIZES.INPUT_CHANNEL,//TAMAÑO
+        channelColors[index],//COLOR SEGUN EL INDICE
+        0.9,//OPACIDAD
+        position//POSICION
       );
       State.layers.inputChannels.push(channel);
       
@@ -313,10 +352,11 @@ const LayerBuilder = {
     LabelModule.createHTMLLabel("Kernel 3x3", 
       { x: CONFIG.LAYER_POSITIONS.KERNEL.x, y: -0.8, z: 0 }
     );
+    
   },
 
   createConvolution1Section() {
-    LabelModule.createHTMLLabel("CONVOLUTION 1", 
+    LabelModule.createHTMLLabel("CONVOLUCION", 
       { x: CONFIG.LAYER_POSITIONS.CONV1_FILTERS[3].x, y: 2, z: 0 }, 
       'section-label'
     );
@@ -344,7 +384,7 @@ const LayerBuilder = {
       );
     });
     
-    LabelModule.createHTMLLabel("FEATURE MAPS 1", 
+    LabelModule.createHTMLLabel("FEATURE MAPS", 
       { x: CONFIG.LAYER_POSITIONS.FEATURE_MAPS_1[3].x, y: 2, z: 0 }, 
       'section-label'
     );
@@ -361,7 +401,7 @@ const LayerBuilder = {
   },
 
   createActivationSection() {
-    LabelModule.createHTMLLabel("ReLU ACTIVATION", 
+    LabelModule.createHTMLLabel("ReLU ACTIVACION", 
       { x: CONFIG.LAYER_POSITIONS.RELU_1[3].x, y: 2, z: 0 }, 
       'section-label'
     );
@@ -377,7 +417,7 @@ const LayerBuilder = {
       CONFIG.ACTIVATION.SIZE.width,
       CONFIG.ACTIVATION.SIZE.height
     );
-    
+    //NO DEPENDE DE LUCES SIEMPRE VISIBLE
     const material = new THREE.MeshBasicMaterial({
       color: index % 3 === 0 ? CONFIG.COLORS.RELU_ACTIVE : CONFIG.COLORS.RELU_INACTIVE,
       transparent: true,
@@ -400,7 +440,7 @@ const LayerBuilder = {
   },
 
   createPooling1Section() {
-    LabelModule.createHTMLLabel("MAX POOLING 1", 
+    LabelModule.createHTMLLabel("MAX POOLING", 
       { x: CONFIG.LAYER_POSITIONS.POOL_1[3].x, y: 2, z: 0 }, 
       'section-label'
     );
@@ -417,7 +457,7 @@ const LayerBuilder = {
   },
 
   createConvolution2Section() {
-    LabelModule.createHTMLLabel("CONVOLUTION 2", 
+    LabelModule.createHTMLLabel("CONVOLUCION", 
       { x: CONFIG.LAYER_POSITIONS.CONV2_FILTERS[6].x, y: 2, z: 0 }, 
       'section-label'
     );
@@ -459,7 +499,7 @@ const LayerBuilder = {
   },
 
   createPooling2Section() {
-    LabelModule.createHTMLLabel("MAX POOLING 2", 
+    LabelModule.createHTMLLabel("MAX POOLING", 
       { x: CONFIG.LAYER_POSITIONS.POOL_2[6].x, y: 2, z: 0 }, 
       'section-label'
     );
@@ -477,7 +517,7 @@ const LayerBuilder = {
 
   createFlattenSection() {
     LabelModule.createHTMLLabel("FLATTEN", 
-      { x: 6, y: 2, z: 0 }, 
+      { x: 5, y: 2, z: 0 }, 
       'section-label'
     );
     
@@ -494,13 +534,11 @@ const LayerBuilder = {
 
   createFullyConnectedSection() {
     LabelModule.createHTMLLabel("FULLY CONNECTED", 
-      { x: 8.5, y: 3, z: 0 },  // Ajustar posición Y para mayor espacio
+      { x: 7, y: 2.5, z: 0 }, 
       'section-label'
     );
     
-
-    // Crear Columna 1: 11 neuronas
-    CONFIG.LAYER_POSITIONS.FC_COLUMNS.COL1.forEach((position, index) => {
+    CONFIG.LAYER_POSITIONS.FC_NEURONS.forEach((position, index) => {
       const neuron = new THREE.Mesh(
         new THREE.SphereGeometry(CONFIG.LAYER_SIZES.FC_NEURON.radius, 12, 12),
         new THREE.MeshPhongMaterial({ 
@@ -510,55 +548,13 @@ const LayerBuilder = {
       );
       neuron.position.set(position.x, position.y, position.z);
       State.scene.add(neuron);
-      State.layers.fcColumn1.push(neuron);
-    });
-    
-    // Crear Columna 2: 7 neuronas
-    CONFIG.LAYER_POSITIONS.FC_COLUMNS.COL2.forEach((position, index) => {
-      const neuron = new THREE.Mesh(
-        new THREE.SphereGeometry(CONFIG.LAYER_SIZES.FC_NEURON.radius, 12, 12),
-        new THREE.MeshPhongMaterial({ 
-          color: CONFIG.COLORS.FC_LAYER,
-          shininess: 100
-        })
-      );
-      neuron.position.set(position.x, position.y, position.z);
-      State.scene.add(neuron);
-      State.layers.fcColumn2.push(neuron);
-    });
-    
-    // Crear Columna 3: 5 neuronas
-    CONFIG.LAYER_POSITIONS.FC_COLUMNS.COL3.forEach((position, index) => {
-      const neuron = new THREE.Mesh(
-        new THREE.SphereGeometry(CONFIG.LAYER_SIZES.FC_NEURON.radius, 12, 12),
-        new THREE.MeshPhongMaterial({ 
-          color: CONFIG.COLORS.FC_LAYER,
-          shininess: 100
-        })
-      );
-      neuron.position.set(position.x, position.y, position.z);
-      State.scene.add(neuron);
-      State.layers.fcColumn3.push(neuron);
-    });
-    
-    // Crear Columna 4: 3 neuronas
-    CONFIG.LAYER_POSITIONS.FC_COLUMNS.COL4.forEach((position, index) => {
-      const neuron = new THREE.Mesh(
-        new THREE.SphereGeometry(CONFIG.LAYER_SIZES.FC_NEURON.radius, 12, 12),
-        new THREE.MeshPhongMaterial({ 
-          color: CONFIG.COLORS.FC_LAYER,
-          shininess: 100
-        })
-      );
-      neuron.position.set(position.x, position.y, position.z);
-      State.scene.add(neuron);
-      State.layers.fcColumn4.push(neuron);
+      State.layers.fcNeurons.push(neuron);
     });
   },
 
   createOutputSection() {
     LabelModule.createHTMLLabel("OUTPUT LAYER", 
-      { x: 13, y: 2, z: 0 }, 
+      { x: 9, y: 2, z: 0 }, 
       'section-label'
     );
     
@@ -596,6 +592,13 @@ const LayerBuilder = {
   },
 
   createAllConnections() {
+    // Conectar la imagen de entrada con cada canal RGB
+  if (State.layers.inputImage) {
+    State.layers.inputChannels.forEach(channel => {
+      this.createConnection(State.layers.inputImage, channel);
+    });
+  }
+
     State.layers.inputChannels.forEach(channel => {
       State.layers.conv1Filters.forEach(filter => {
         this.createConnection(channel, filter);
@@ -643,52 +646,18 @@ const LayerBuilder = {
         this.createConnection(pool, State.layers.flatten[index]);
       }
     });
-    // ======== CONEXIONES FULLY CONNECTED (4 CAPAS) ========
     
-    // Conexiones: Flatten → Columna 1 (12 flatten → 11 neuronas)
     State.layers.flatten.forEach(flatten => {
-      State.layers.fcColumn1.forEach(neuron => {
+      State.layers.fcNeurons.forEach(neuron => {
         this.createConnection(flatten, neuron);
       });
     });
     
-    // Conexiones BIDIRECCIONALES entre columnas adyacentes
-    // Columna 1 ↔ Columna 2
-    State.layers.fcColumn1.forEach(neuron1 => {
-      State.layers.fcColumn2.forEach(neuron2 => {
-        this.createConnection(neuron1, neuron2);
+    State.layers.fcNeurons.forEach(neuron => {
+      State.layers.outputClasses.forEach(output => {
+        this.createConnection(neuron, output);
       });
     });
-    
-    // Columna 2 ↔ Columna 3 
-    State.layers.fcColumn2.forEach(neuron1 => {
-      State.layers.fcColumn3.forEach(neuron2 => {
-        this.createConnection(neuron1, neuron2);
-      });
-    });
-    
-    // Columna 3 ↔ Columna 4 
-    State.layers.fcColumn3.forEach(neuron1 => {
-      State.layers.fcColumn4.forEach(neuron2 => {
-        this.createConnection(neuron1, neuron2);
-      });
-    });
-    
-    // ======== CONEXIONES DIRECTAS COL4 ========
-    // Bolita superior  -> HORSE 
-    if (State.layers.fcColumn4[0] && State.layers.outputClasses[0]) {
-      this.createConnection(State.layers.fcColumn4[0], State.layers.outputClasses[0]);
-    }
-    
-    // Bolita medio  -> ZEBRA  
-    if (State.layers.fcColumn4[1] && State.layers.outputClasses[1]) {
-      this.createConnection(State.layers.fcColumn4[1], State.layers.outputClasses[1]);
-    }
-    
-    // Bolita inferior  -> DOG 
-    if (State.layers.fcColumn4[2] && State.layers.outputClasses[2]) {
-      this.createConnection(State.layers.fcColumn4[2], State.layers.outputClasses[2]);
-    }
   },
 
   createConnection(from, to, color = CONFIG.COLORS.CONNECTION) {
@@ -708,7 +677,11 @@ const LayerBuilder = {
     State.scene.add(line);
     State.connections.push(line);
   }
+
 };
+
+
+
 // ======== MÓDULO DE ANIMACIÓN DE DATOS ========
 const DataFlowAnimator = {
   isAnimating: false,
@@ -720,7 +693,7 @@ const DataFlowAnimator = {
     
     this.isAnimating = true;
     this.updateStatusIndicator(true);
-    this.updateUI("🚀 Iniciando clasificación de imagen...");
+    this.updateUI(" Iniciando clasificación de imagen...");
     this.resetOutputColors();
     
     // Iniciar flujo por cada canal RGB
@@ -748,7 +721,7 @@ const DataFlowAnimator = {
     
     const animateNextChannel = () => {
       if (channelIndex >= channelColors.length) {
-        this.updateUI("✅ Canales RGB procesados. Combinando características...");
+        this.updateUI("Canales RGB procesados. Combinando características...");
         setTimeout(() => {
           this.animateCompleteFlow();
         }, 1000 * this.animationSpeed);
@@ -756,7 +729,7 @@ const DataFlowAnimator = {
       }
       
       const channelColor = channelColors[channelIndex];
-      this.updateUI(`🔴 Procesando canal ${channelColor.name}...`);
+      this.updateUI(`Procesando canal ${channelColor.name}...`);
       
       this.animateKernelOnChannel(channelIndex, () => {
         this.animateChannelToFilters(channelIndex, channelColor.color, () => {
@@ -815,7 +788,7 @@ const DataFlowAnimator = {
   },
 
   animateCompleteFlow() {
-    this.updateUI("🔄 Combinando características y propagando...");
+    this.updateUI("Combinando características y propagando...");
     
     const selectedFeatures = [];
     for (let i = 0; i < 3; i++) {
@@ -891,36 +864,20 @@ const DataFlowAnimator = {
     if (State.layers.pool2[conv2FilterIndex]) {
       path.push(State.layers.pool2[conv2FilterIndex].position.clone());
     }
-
+    
     if (State.layers.flatten[conv2FilterIndex]) {
       path.push(State.layers.flatten[conv2FilterIndex].position.clone());
     }
     
-    // ======== NUEVA RUTA PARA LAS 4 CAPAS FULLY CONNECTED ========
-    // El flujo pasa por UNA neurona aleatoria de cada columna
-    const col1Index = Math.floor(Math.random() * State.layers.fcColumn1.length);
-    if (State.layers.fcColumn1[col1Index]) {
-      path.push(State.layers.fcColumn1[col1Index].position.clone());
-    }
-    
-    const col2Index = Math.floor(Math.random() * State.layers.fcColumn2.length);
-    if (State.layers.fcColumn2[col2Index]) {
-      path.push(State.layers.fcColumn2[col2Index].position.clone());
-    }
-    
-    const col3Index = Math.floor(Math.random() * State.layers.fcColumn3.length);
-    if (State.layers.fcColumn3[col3Index]) {
-      path.push(State.layers.fcColumn3[col3Index].position.clone());
-    }
-    
-    const col4Index = Math.floor(Math.random() * State.layers.fcColumn4.length);
-    if (State.layers.fcColumn4[col4Index]) {
-      path.push(State.layers.fcColumn4[col4Index].position.clone());
+    const fcIndex = Math.floor(Math.random() * State.layers.fcNeurons.length);
+    if (State.layers.fcNeurons[fcIndex]) {
+      path.push(State.layers.fcNeurons[fcIndex].position.clone());
     }
     
     if (State.layers.outputClasses[1]) {
       path.push(State.layers.outputClasses[1].position.clone());
     }
+    
     return path;
   },
 
@@ -1054,28 +1011,34 @@ const DataFlowAnimator = {
       this.activeParticles.splice(activeIndex, 1);
     }
   },
+
   resetOutputColors() {
     State.layers.outputClasses.forEach(output => {
       output.material.color.setHex(CONFIG.COLORS.OUTPUT_LAYER);
-      output.scale.setScalar(1);
     });
-    
-    // Resetear secuencia de activación
-    ActivationSequence.resetAll();
   },
-  
+
   showFinalResult() {
-    // 1. Iniciar secuencia de activación
-    ActivationSequence.runSequence();
+    if (State.layers.outputClasses[1]) {
+      const zebraOutput = State.layers.outputClasses[1];
+      zebraOutput.material.color.setHex(0x00FF00);
+      
+      let pulseTime = 0;
+      const pulse = () => {
+        pulseTime += 0.05;
+        const intensity = 0.5 + 0.5 * Math.sin(pulseTime);
+        zebraOutput.scale.setScalar(1 + intensity * 0.1);
+        
+        if (pulseTime < 5) {
+          requestAnimationFrame(pulse);
+        } else {
+          zebraOutput.scale.setScalar(1);
+        }
+      };
+      pulse();
+    }
     
-    // 3. Actualizar UI
-    this.updateUI("<strong> CLASIFICACIÓN COMPLETA:</strong><br>La imagen ha sido identificada como <span style='color:#00FF00; font-weight:bold;'>ZEBRA</span> 🦓<br><small>Secuencia de activación: Col1 → Col2 → Col3 → Col4 → Output</small>");
-    
-    // 4. Marcar animación como completada después de la secuencia
-    setTimeout(() => {
-      this.isAnimating = false;
-      this.updateStatusIndicator(false);
-    },  10000);
+    this.updateUI("<strong> CLASIFICACIÓN COMPLETA:</strong><br>La imagen ha sido identificada como <span style='color:#00FF00; font-weight:bold;'>ZEBRA</span> 🦓");
   },
 
   updateUI(text) {
@@ -1085,170 +1048,7 @@ const DataFlowAnimator = {
     }
   }
 };
-// ======== MÓDULO DE ACTIVACIÓN SECUENCIAL DE LUCES DE LA SECCION DE BOLITAS========
-const ActivationSequence = {
-  //definicion del color que cambiara cada neurona al activarse
-  ACTIVATION_COLOR: 0xFFD700,
-  // Neuronas fijas que se activarán en cada columna
-  FIXED_NEURONS: {
-    COL1: 8,  
-    COL2: 1, 
-    COL3: 4,  
-    COL4: 1,  
-    OUTPUT: 1
-  },
-  // Material original de las neuronas (para restaurar)
-  originalMaterials: new Map(),
-  
-  // Activar una neurona específica
-  activateNeuron(columnArray, index, color = this.ACTIVATION_COLOR) {
-    if (!columnArray || !columnArray[index]) return;
-    
-    const neuron = columnArray[index];
-    
-    // Guardar material original si no está guardado
-    if (!this.originalMaterials.has(neuron)) {
-      this.originalMaterials.set(neuron, {
-        color: neuron.material.color.getHex(),
-        shininess: neuron.material.shininess
-      });
-    }
-    
-    // Cambiar a color de activación
-    neuron.material.color.setHex(color);
-    neuron.material.shininess = 150; 
-    
-    // Efecto de pulso
-    neuron.userData = neuron.userData || {};
-    neuron.userData.isActivated = true;
-    neuron.userData.pulseTime = 0;
-  },
-  
-  // Desactivar una neurona (volver al color original)
-  deactivateNeuron(columnArray, index) {
-    if (!columnArray || !columnArray[index]) return;
-    
-    const neuron = columnArray[index];
-    const original = this.originalMaterials.get(neuron);
-    
-    if (original) {
-      neuron.material.color.setHex(original.color);
-      neuron.material.shininess = original.shininess;
-    } else {
-      // Si no hay original, volver al color morado por defecto
-      neuron.material.color.setHex(CONFIG.COLORS.FC_LAYER);
-      neuron.material.shininess = 100;
-    }
-    
-    if (neuron.userData) {
-      neuron.userData.isActivated = false;
-    }
-  },
-  
-  // Ejecutar secuencia completa de activación
-  runSequence() {
-    // Secuencia con delays (500ms entre cada paso)
-    // Paso 1: Activar Columna 1
-    setTimeout(() => {
-      console.log(" Paso 1: Activando Col1[5]");
-      this.activateNeuron(State.layers.fcColumn1, this.FIXED_NEURONS.COL1);
-    }, 500);
-    
-    // Paso 2: Desactivar Col1 y activar Col2
-    setTimeout(() => {
-      console.log(" Paso 2: Col1[5] → OFF, Col2[3] → ON");
-      this.deactivateNeuron(State.layers.fcColumn1, this.FIXED_NEURONS.COL1);
-      this.activateNeuron(State.layers.fcColumn2, this.FIXED_NEURONS.COL2);
-    }, 1000);
-    
-    // Paso 3: Desactivar Col2 y activar Col3
-    setTimeout(() => {
-      console.log(" Paso 3: Col2[3] → OFF, Col3[2] → ON");
-      this.deactivateNeuron(State.layers.fcColumn2, this.FIXED_NEURONS.COL2);
-      this.activateNeuron(State.layers.fcColumn3, this.FIXED_NEURONS.COL3);
-    }, 1500);
-    
-    // Paso 4: Desactivar Col3 y activar Col4
-    setTimeout(() => {
-       console.log(" Paso 4: Col3[2] → OFF, Col4[1] → ON");
-      this.deactivateNeuron(State.layers.fcColumn3, this.FIXED_NEURONS.COL3);
-      this.activateNeuron(State.layers.fcColumn4, this.FIXED_NEURONS.COL4);
-    }, 2000);
-    
-    // Paso 5: Desactivar Col4 y activar Output (ZEBRA)
-    setTimeout(() => {
-      console.log(" Paso 5: Col4[1] → OFF, Output[1] (ZEBRA) → ON");
-      this.deactivateNeuron(State.layers.fcColumn4, this.FIXED_NEURONS.COL4);
-      this.activateOutput();
-    }, 2500);
-  },
-  
-  // Activar el output (ZEBRA)
-  activateOutput() {
-    const zebraOutput = State.layers.outputClasses[this.FIXED_NEURONS.OUTPUT];
-    if (zebraOutput) {
-      // Guardar color original
-      if (!this.originalMaterials.has(zebraOutput)) {
-        this.originalMaterials.set(zebraOutput, {
-          color: zebraOutput.material.color.getHex(),
-          opacity: zebraOutput.material.opacity
-        });
-      }
-      
-      // Cambiar a color de activación (dorado)
-      zebraOutput.material.color.setHex(this.ACTIVATION_COLOR);
-      zebraOutput.material.opacity = 1.0;
-      
-      // CORRECCIÓN: Para BoxGeometry, escala es un Vector3, no tiene setScalar
-      let pulseTime = 0;
-      const originalScale = { 
-        x: zebraOutput.scale.x, 
-        y: zebraOutput.scale.y, 
-        z: zebraOutput.scale.z 
-      };
-      
-      const pulse = () => {
-        pulseTime += 0.05;
-        const intensity = 0.5 + 0.5 * Math.sin(pulseTime);
-        const scale = 1 + intensity * 0.15;
-        
-        // Usar .scale.set() en lugar de .scale.setScalar()
-        zebraOutput.scale.set(scale, scale, scale);
-        
-        if (pulseTime < 8) {
-          requestAnimationFrame(pulse);
-        } else {
-          // Restaurar escala original
-          zebraOutput.scale.set(originalScale.x, originalScale.y, originalScale.z);
-        }
-      };
-      pulse();
-    }
-  },
-  
-  // Resetear todas las activaciones
-  resetAll() {
-    // Resetear neuronas FC
-    [State.layers.fcColumn1, State.layers.fcColumn2, State.layers.fcColumn3, State.layers.fcColumn4].forEach(column => {
-      if (column) {
-        column.forEach((neuron, index) => {
-          this.deactivateNeuron(column, index);
-        });
-      }
-    });
-    
-    // Resetear outputs - CORRECCIÓN: los outputs son BoxGeometry, no SphereGeometry
-    State.layers.outputClasses.forEach((output, index) => {
-      const original = this.originalMaterials.get(output);
-      if (original) {
-        output.material.color.setHex(original.color);
-        output.material.opacity = original.opacity;
-      }
-      // Para BoxGeometry, usar .scale.set(1, 1, 1) en lugar de .scale.setScalar(1)
-      output.scale.set(1, 1, 1);
-    });
-  }
-};
+
 // ======== MÓDULO DE INICIALIZACIÓN ========
 const InitializationModule = {
   init() {
@@ -1312,7 +1112,7 @@ const InitializationModule = {
   },
 
   addLights() {
-    // Configuración de luces compatible con r71
+    // Configuración de luces 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(20, 20, 20);
     directionalLight.castShadow = true;
@@ -1351,6 +1151,7 @@ const InitializationModule = {
     LabelModule.updateHTMLLabelsPosition();
   }
 };
+
 // ======== MÓDULO DE ANIMACIÓN PRINCIPAL ========
 const AnimationLoop = {
   clock: new THREE.Clock(),
@@ -1391,71 +1192,25 @@ const AnimationLoop = {
         }
       });
     }
-    // ======== ANIMACIÓN DE LAS 4 COLUMNAS FULLY CONNECTED ========
-    if (State.layers.fcColumn1) {
-      State.layers.fcColumn1.forEach((neuron, index) => {
+    
+    if (State.layers.fcNeurons) {
+      State.layers.fcNeurons.forEach((neuron, index) => {
         neuron.rotation.x += deltaTime * 0.2;
         neuron.rotation.y += deltaTime * 0.3;
       });
     }
     
-    if (State.layers.fcColumn2) {
-      State.layers.fcColumn2.forEach((neuron, index) => {
-        neuron.rotation.x += deltaTime * 0.25;
-        neuron.rotation.y += deltaTime * 0.35;
-      });
-    }
-    
-    if (State.layers.fcColumn3) {
-      State.layers.fcColumn3.forEach((neuron, index) => {
-        neuron.rotation.x += deltaTime * 0.3;
-        neuron.rotation.y += deltaTime * 0.4;
-      });
-    }
-
-    if (State.layers.fcColumn4) {
-      State.layers.fcColumn4.forEach((neuron, index) => {
-        neuron.rotation.x += deltaTime * 0.35;
-        neuron.rotation.y += deltaTime * 0.45;
-      });
-    }
-    // ======== LOOP AUTOMÁTICO DE ACTIVACIÓN SECUENCIAL (INFINITO) ========
-    if (window.ActivationSequence && !window.isSequenceRunning) {
-      window.isSequenceRunning = true;
-      console.log(" Iniciando loop infinito de activación secuencial...");
-      
-      // Función que se llama a sí misma infinitamente
-      const startInfiniteLoop = () => {
-        // Paso 1: Ejecutar secuencia
-        console.log(" Ciclo " + (window.sequenceCycle = (window.sequenceCycle || 0) + 1));
-        ActivationSequence.runSequence();
-        
-        // Paso 2: Esperar 8 segundos (3s secuencia + 5s pausa)
-        setTimeout(() => {
-          // Paso 3: Resetear todo
-          console.log(" Reseteando para próximo ciclo...");
-          ActivationSequence.resetAll();
-          
-          // Paso 4: Iniciar de nuevo inmediatamente
-          startInfiniteLoop();
-        }, 8000);
-      };
-      
-      // Iniciar después de 2 segundos
-      setTimeout(() => {
-        startInfiniteLoop();
-      }, 2000);
-    }
     if (State.renderer && State.scene && State.camera) {
       State.renderer.render(State.scene, State.camera);
     }
   }
 };
+
 // ======== MÓDULO DE INTERFAZ DE USUARIO ========
 const UIModule = {
   init() {
     this.setupEventHandlers();
-    console.log('✅ UI Module inicializado');
+    console.log(' UI Module inicializado');
   },
 
   setupEventHandlers() {
@@ -1477,10 +1232,9 @@ const UIModule = {
       });
     }
     
-    // Botón de información (ya manejado en HTML)
-    // No necesita acción adicional aquí
   }
 };
+
 // ======== INICIALIZACIÓN DE LA APLICACIÓN ========
 class CNNVisualizer {
   constructor() {
@@ -1509,9 +1263,6 @@ class CNNVisualizer {
       window.State = State;
       window.DataFlowAnimator = DataFlowAnimator;
       window.CONFIG = CONFIG;
-      window.ActivationSequence = ActivationSequence; 
-      window.isSequenceRunning = false; 
-      window.sequenceCycle = 0; 
       
       console.log(' CNN 3D Visualizer inicializado correctamente');
       console.log(' Arquitectura:');
@@ -1522,10 +1273,9 @@ class CNNVisualizer {
       console.log('  • Conv2: 12 filtros → 12 feature maps');
       console.log('  • Pooling2: 12 capas');
       console.log('  • Flatten: 12 neuronas');
-      console.log('  • Fully Connected: 11→7→5→3 neuronas (4 capas)');
+      console.log('  • Fully Connected: 8 neuronas');
       console.log('  • Output: 3 clases');
       
-      // Actualizar estado inicial
       DataFlowAnimator.updateStatusIndicator(false);
       
     } catch (error) {
@@ -1560,6 +1310,7 @@ class CNNVisualizer {
     document.body.appendChild(errorDiv);
   }
 }
+
 // ======== INICIAR APLICACIÓN ========
 document.addEventListener('DOMContentLoaded', () => {
   // Estilos adicionales
@@ -1569,17 +1320,14 @@ document.addEventListener('DOMContentLoaded', () => {
       display: block;
     }
     
-    /* Asegurar que los controles estén por encima del canvas */
     .controls-panel {
       z-index: 1000 !important;
     }
-    
-    /* Mejorar visibilidad de etiquetas 3D */
+  
     .layer-label, .section-label {
       z-index: 999 !important;
     }
     
-    /* Animación de carga */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -1590,5 +1338,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   `;
   document.head.appendChild(style);
+  
   new CNNVisualizer();
 });
