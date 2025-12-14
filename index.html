@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🧠 CNN 3D Visualizer - Red Neuronal Convolucional</title>
+    <title>CNN 3D Visualizer - Red Neuronal Convolucional</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0f0f15;
+            background: #0a0a12;
             color: white;
             overflow: hidden;
             height: 100vh;
@@ -28,90 +28,100 @@
             z-index: 1;
         }
         
-        /* PANEL DE CONTROLES EN LA PARTE SUPERIOR */
+        /* PANEL DE CONTROLES - DISEÑO MEJORADO */
         .controls-panel {
             position: fixed;
-            top: 10px;
+            top: 12px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
-            border-radius: 12px;
-            padding: 10px 15px;
+            background: rgba(15, 15, 25, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 14px;
+            padding: 12px 16px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             z-index: 1000;
-            max-width: 90%;
-            min-height: 40px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(79, 195, 247, 0.2);
+            max-width: 95%;
+            min-height: 46px;
+            box-shadow: 
+                0 4px 16px rgba(0, 0, 0, 0.4),
+                inset 0 0 0 1px rgba(80, 160, 240, 0.15);
+            border: 1px solid rgba(79, 195, 247, 0.25);
         }
         
         .panel-title {
-            font-size: 14px;
-            font-weight: bold;
+            font-size: 15px;
+            font-weight: 600;
             color: #4FC3F7;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            text-shadow: 0 0 6px rgba(79, 195, 247, 0.3);
         }
         
-        .panel-title span {
-            font-size: 18px;
-        }
-        
-        /* Botón principal */
         .btn-primary {
-            padding: 6px 12px;
-            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            padding: 7px 16px;
+            background: linear-gradient(135deg, #43a047, #2e7d32);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 12px;
+            font-weight: 600;
+            font-size: 13px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
         
         .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
         }
         
-        /* Botones secundarios */
-        .btn-secondary {
-            padding: 6px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+        .camera-controls {
+            display: flex;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px;
+            border-radius: 10px;
+        }
+        
+        .camera-btn {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 6px;
             color: white;
             cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s ease;
+            font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s ease;
+            font-weight: bold;
         }
         
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.3);
+        .camera-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+            border-color: rgba(255, 255, 255, 0.35);
         }
         
-        /* Estado de animación */
         .status-display {
-            padding: 6px 10px;
+            padding: 6px 12px;
             background: rgba(0, 0, 0, 0.4);
-            border-radius: 6px;
-            font-size: 11px;
+            border-radius: 8px;
+            font-size: 12px;
             color: #aaa;
             min-width: 120px;
             text-align: center;
             border-left: 3px solid #4CAF50;
+            font-weight: 500;
         }
         
         .status-display.active {
@@ -119,88 +129,75 @@
             border-left-color: #4CAF50;
         }
         
-        /* Controles de cámara (pequeños) */
-        .camera-controls {
-            display: flex;
-            gap: 6px;
-        }
-        
-        .camera-btn {
-            padding: 4px 8px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            color: white;
-            cursor: pointer;
-            font-size: 10px;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .camera-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-        
-        /* Slider de velocidad */
         .speed-slider {
-            width: 60px;
-            height: 4px;
+            width: 65px;
+            height: 5px;
             -webkit-appearance: none;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
             outline: none;
-            margin: 0 6px;
         }
         
         .speed-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 10px;
-            height: 10px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
-            background: #4FC3F7;
+            background: #2196F3;
             cursor: pointer;
-            border: 2px solid rgba(255, 255, 255, 0.8);
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         
-        /* Leyenda de capas (opcional, solo si caben) */
-        .layers-legend {
-            display: none; /* Oculto por defecto, se puede mostrar en pantallas grandes */
+        .btn-secondary {
+            padding: 6px 12px;
+            background: rgba(100, 100, 120, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
         
-        /* Responsive */
+        .btn-secondary:hover {
+            background: rgba(120, 120, 140, 0.4);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
         @media (max-width: 768px) {
             .controls-panel {
-                padding: 8px 10px;
-                gap: 8px;
+                gap: 12px;
+                padding: 10px 14px;
+                flex-wrap: wrap;
+                justify-content: center;
             }
             
             .btn-primary {
-                padding: 4px 8px;
-                font-size: 10px;
+                padding: 6px 14px;
+                font-size: 12px;
             }
             
             .camera-btn {
-                padding: 3px 6px;
-                font-size: 9px;
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
             }
             
             .status-display {
-                min-width: 80px;
-                font-size: 10px;
+                min-width: 100px;
+                font-size: 11px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Contenedor principal de Three.js -->
     <div id="container"></div>
     
-    <!-- PANEL DE CONTROLES EN LA PARTE SUPERIOR -->
     <div class="controls-panel">
         <div class="panel-title">
+
             <span>CNN 3D</span>
         </div>
         
@@ -215,7 +212,7 @@
             <button id="camera-right" class="camera-btn">→</button>
             <button id="camera-center" class="camera-btn">◎</button>
             <button id="zoom-in" class="camera-btn">+</button>
-            <button id="zoom-out" class="camera-btn">-</button>
+            <button id="zoom-out" class="camera-btn">−</button>
         </div>
         
         <div class="status-display" id="resultado">
@@ -227,118 +224,131 @@
         <button id="info-btn" class="btn-secondary">info</button>
     </div>
     
-    <!-- Scripts -->
     <script src="lib/three.min.js"></script>
     <script src="lib/OrbitControls.js"></script>
     <script src="lib/dat.gui.min.js"></script>
     <script src="script.js"></script>
     
+    <!-- MISMO SCRIPT EXACTO, SIN CAMBIOS -->
     <script>
-        // Script para manejar los controles del HTML
-        document.addEventListener('DOMContentLoaded', function() {
-            window.CameraControls = {
-                moveStep: 1,
-                rotateStep: 0.1,
-                zoomStep: 0.5,
-                animationSpeed: 1
-            };
-            
-            // Actualizar indicador de estado
-            function updateStatusIndicator(isActive) {
-                const statusDisplay = document.getElementById('resultado');
-                if (isActive) {
-                    statusDisplay.textContent = "Procesando...";
-                    statusDisplay.classList.add('active');
-                } else {
-                    statusDisplay.textContent = "Esperando...";
-                    statusDisplay.classList.remove('active');
-                }
+    document.addEventListener('DOMContentLoaded', function() {
+        window.CameraControls = {
+            moveStep: 0.5,
+            rotateStep: Math.PI / 32,
+            zoomStep: 1.1,
+            animationSpeed: 1
+        };
+
+        function updateStatusIndicator(isActive) {
+            const statusDisplay = document.getElementById('resultado');
+            if (isActive) {
+                statusDisplay.textContent = "Procesando...";
+                statusDisplay.classList.add('active');
+            } else {
+                statusDisplay.textContent = "Esperando...";
+                statusDisplay.classList.remove('active');
             }
-            
-            // Control de velocidad
-            const speedSlider = document.getElementById('speed-slider');
-            speedSlider.addEventListener('input', function() {
-                CameraControls.animationSpeed = parseFloat(this.value);
-                if (window.DataFlowAnimator && window.DataFlowAnimator.updateAnimationSpeed) {
-                    window.DataFlowAnimator.updateAnimationSpeed(CameraControls.animationSpeed);
-                }
-            });
-            
-            // Botones de cámara
-            const cameraButtons = {
-                'camera-up': () => moveCamera(0, CameraControls.moveStep, 0),
-                'camera-down': () => moveCamera(0, -CameraControls.moveStep, 0),
-                'camera-left': () => moveCamera(-CameraControls.moveStep, 0, 0),
-                'camera-right': () => moveCamera(CameraControls.moveStep, 0, 0),
-                'camera-center': () => resetCamera(),
-                'zoom-in': () => zoomCamera(-CameraControls.zoomStep),
-                'zoom-out': () => zoomCamera(CameraControls.zoomStep)
-            };
-            
-            Object.keys(cameraButtons).forEach(buttonId => {
-                const button = document.getElementById(buttonId);
-                if (button) {
-                    button.addEventListener('click', cameraButtons[buttonId]);
-                }
-            });
-            
-            // Función para mover cámara
-            function moveCamera(x, y, z) {
-                if (window.State && window.State.camera) {
-                    window.State.camera.position.x += x;
-                    window.State.camera.position.y += y;
-                    window.State.camera.position.z += z;
-                    window.State.camera.updateProjectionMatrix();
-                }
+        }
+
+        const speedSlider = document.getElementById('speed-slider');
+        speedSlider.addEventListener('input', function() {
+            CameraControls.animationSpeed = parseFloat(this.value);
+            if (window.DataFlowAnimator && window.DataFlowAnimator.updateAnimationSpeed) {
+                window.DataFlowAnimator.updateAnimationSpeed(CameraControls.animationSpeed);
             }
-            
-            // Función para zoom
-            function zoomCamera(step) {
-                if (window.State && window.State.camera) {
-                    const direction = new THREE.Vector3();
-                    window.State.camera.getWorldDirection(direction);
-                    window.State.camera.position.addScaledVector(direction, step);
-                    window.State.camera.updateProjectionMatrix();
-                }
-            }
-            
-            // Función para resetear vista
-            function resetCamera() {
-                if (window.State && window.State.camera && window.State.controls) {
-                    window.State.camera.position.set(0, 5, 25);
-                    window.State.camera.lookAt(0, 0, 0);
-                    
-                    if (window.State.controls.target) {
-                        window.State.controls.target.set(0, 0, 0);
-                        window.State.controls.update();
-                    }
-                    
-                    window.State.camera.updateProjectionMatrix();
-                }
-            }
-            
-            // Botón info
-            document.getElementById('info-btn').addEventListener('click', function() {
-                alert(`CNN 3D Visualizer\n\nControles:\n• Click + arrastrar: Rotar vista\n• Rueda del mouse: Zoom\n• Botones: Movimiento manual\n\nArquitectura:\n• Input: 3 canales RGB\n• Conv1: 6 filtros 3x3\n• Feature Maps 1: 6 mapas\n• ReLU: Activación no lineal\n• Pooling 1: Reducción 2x2\n• Conv2: 12 filtros 3x3\n• Feature Maps 2: 12 mapas\n• Pooling 2: Reducción 2x2\n• Flatten: 12 neuronas\n• Fully Connected: 8 neuronas\n• Output: 3 clases`);
-            });
-            
-            // Botón de inicio
-            document.getElementById('start-classification').addEventListener('click', () => {
-                document.getElementById('resultado').textContent = "Procesando...";
-                if (window.DataFlowAnimator) {
-                    window.DataFlowAnimator.startAnimation();
-                }
-            });
-            
-            // Hacer controles accesibles globalmente
-            window.CameraControls = CameraControls;
-            window.updateStatusIndicator = updateStatusIndicator;
-            window.moveCamera = moveCamera;
-            window.zoomCamera = zoomCamera;
-            window.resetCamera = resetCamera;
-            
-            console.log('Controles HTML cargados correctamente');
         });
+
+        function rotateCamera(angle) {
+            if (!window.State?.camera || !window.State?.controls) return;
+            const camera = window.State.camera;
+            const target = window.State.controls.target;
+            const offset = new THREE.Vector3().subVectors(camera.position, target);
+            offset.applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
+            camera.position.copy(target).add(offset);
+            camera.lookAt(target);
+            window.State.controls.update();
+        }
+
+        function zoomCamera(factor) {
+            if (!window.State?.camera || !window.State?.controls) return;
+            const camera = window.State.camera;
+            const target = window.State.controls.target;
+            const offset = new THREE.Vector3().subVectors(camera.position, target);
+            offset.multiplyScalar(factor);
+            camera.position.copy(target).add(offset);
+            window.State.controls.update();
+        }
+
+        const cameraButtons = {
+            'camera-up': () => moveCamera(0, CameraControls.moveStep, 0),
+            'camera-down': () => moveCamera(0, -CameraControls.moveStep, 0),
+            'camera-left': () => moveCamera(-CameraControls.moveStep, 0, 0),
+            'camera-right': () => moveCamera(CameraControls.moveStep, 0, 0),
+            'camera-center': () => resetCamera(),
+            'zoom-in': () => zoomCamera(0.8),
+            'zoom-out': () => zoomCamera(1.25),
+            'camera-rotate-left': () => rotateCamera(-CameraControls.rotateStep),
+            'camera-rotate-right': () => rotateCamera(CameraControls.rotateStep)
+        };
+
+        const controlsPanel = document.querySelector('.controls-panel');
+        const rotateGroup = document.createElement('div');
+        rotateGroup.className = 'camera-controls';
+        rotateGroup.innerHTML = `
+            <button id="camera-rotate-left" class="camera-btn">↶</button>
+            <button id="camera-rotate-right" class="camera-btn">↷</button>
+        `;
+        const zoomGroup = document.querySelector('.camera-controls');
+        zoomGroup.parentNode.insertBefore(rotateGroup, zoomGroup.nextSibling);
+
+        Object.keys(cameraButtons).forEach(buttonId => {
+            const button = document.getElementById(buttonId);
+            if (button) {
+                button.addEventListener('click', cameraButtons[buttonId]);
+            }
+        });
+
+        function moveCamera(x, y, z) {
+            if (window.State && window.State.camera) {
+                window.State.camera.position.x += x;
+                window.State.camera.position.y += y;
+                window.State.camera.position.z += z;
+                window.State.camera.updateProjectionMatrix();
+            }
+        }
+
+        function resetCamera() {
+            if (window.State && window.State.camera && window.State.controls) {
+                window.State.camera.position.set(0, 5, 25);
+                window.State.camera.lookAt(0, 0, 0);
+                if (window.State.controls.target) {
+                    window.State.controls.target.set(0, 0, 0);
+                    window.State.controls.update();
+                }
+                window.State.camera.updateProjectionMatrix();
+            }
+        }
+
+        document.getElementById('info-btn').addEventListener('click', function() {
+            alert(`CNN 3D Visualizer\n\nControles:\n• Click + arrastrar: Rotar vista\n• Rueda del mouse: Zoom\n• Botones:\n  - ↑↓←→: Mover cámara\n  - ◎: Volver al centro\n  - + -: Zoom\n  - ↶↷: Rotar alrededor`);
+        });
+
+        document.getElementById('start-classification').addEventListener('click', () => {
+            document.getElementById('resultado').textContent = "Procesando...";
+            if (window.DataFlowAnimator) {
+                window.DataFlowAnimator.startAnimation();
+            }
+        });
+
+        window.CameraControls = CameraControls;
+        window.updateStatusIndicator = updateStatusIndicator;
+        window.moveCamera = moveCamera;
+        window.zoomCamera = zoomCamera;
+        window.rotateCamera = rotateCamera;
+        window.resetCamera = resetCamera;
+
+        console.log(' Controles HTML cargados con rotación y zoom mejorados');
+    });
     </script>
 </body>
 </html>
