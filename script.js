@@ -1,8 +1,8 @@
 // ======== MÓDULO CONFIGURACIÓN ========
 const CONFIG = {
   COLORS: {
-    BACKGROUND: 0x333333,
-    INPUT_LAYER: 0x4FC3F7,
+    BACKGROUND: 0x333333,//color de fondo
+    INPUT_LAYER: 0x4FC3F7, 
     KERNEL: 0xFFFF00,
     INPUT_RED: 0xFF5252,
     INPUT_GREEN: 0x69F0AE,
@@ -13,41 +13,54 @@ const CONFIG = {
     CONV_FILTER_4: 0xFFE0B2,
     CONV_FILTER_5: 0xFFECB3,
     CONV_FILTER_6: 0xFFF8E1,
+    ///mapas de caracteriticas
     FEATURE_MAP: 0x4CAF50,
+    //SIMULACION DEL RELU
     RELU_ACTIVE: 0x00E676,
     RELU_INACTIVE: 0xFF5252,
+
     POOL_LAYER: 0xFFC107,
     FLATTEN_LAYER: 0x8BC34A,
+    //BOLITAS
     FC_LAYER: 0x9C27B0,
+    
     OUTPUT_LAYER: 0xE91E63,
+    
     SIGNAL_RED: 0xFF5252,
     SIGNAL_GREEN: 0x69F0AE,
     SIGNAL_BLUE: 0x448AFF,
-    CONNECTION: 0xaaaaaa
+    //lineas de conexion
+    CONNECTION: 0XFFFFFF
   },
   
   LAYER_SIZES: {
+    //ANCHO , ALTO, GROSOR
     INPUT_CHANNEL: { width: 3, height: 3, depth: 0.3 },
-    KERNEL: { width: 0.6, height: 0.6, depth: 0.1 },
+    KERNEL: { width: 0.6, height: 0.6, depth: 0.5 },
+    //TAMAÑOS DE LOS FILTROS
     CONV1_FILTER: { width: 1.4, height: 1.5, depth: 0.3 },
     FEATURE_MAP_1: { width: 2, height: 2, depth: 0.2 },
     CONV2_FILTER: { width: 1.2, height: 1.2, depth: 0.25 },
     FEATURE_MAP_2: { width: 1.5, height: 1.5, depth: 0.18 },
+    //TAMAÑO DE LSO MASPA TRAS POLING
     POOL_1: { width: 1, height: 1, depth: 0.15 },
     POOL_2: { width: 0.8, height: 0.8, depth: 0.12 },
     FLATTEN: { width: 0.25, height: 0.25, depth: 0.1 },
+    //RADIO DE LAS BOLITAS O NEURONAS
     FC_NEURON: { radius: 0.15 },
-    OUTPUT: { width: 1.2, height: 0.6, depth: 0.2 }
+    //ETIQUETA DE SALIDA
+    OUTPUT: { width: 1.2, height: 0.6, depth: 0.5 }
   },
-  
+  //TODAS LAS POSICIONES
   LAYER_POSITIONS: {
+    
     INPUT_CHANNELS: [
       { x: -15, y: 0, z: -0.8 },
       { x: -15, y: 0, z: 0 },
       { x: -15, y: 0, z: 0.8 }
     ],
     
-    KERNEL: { x: -14, y: 0, z: 0 },
+    KERNEL: { x: -16, y: 0, z:0.8 },
     
     CONV1_FILTERS: [
       { x: -11, y: 0, z: -1.5 },
@@ -131,8 +144,8 @@ const CONFIG = {
     ],
     
     FLATTEN_GRID: Array.from({length: 12}, (_, i) => ({
-      x: 5 + Math.floor(i / 3) * 0.6,
-      y: (i % 3 - 1) * 0.6,
+      x: 5,             // todos en el mismo X
+      y: i * 0.3,       // avanza en Y
       z: 0
     })),
     
@@ -154,10 +167,10 @@ const CONFIG = {
     ]
   },
   
-  OUTPUT_LABELS: ["Horse", "Zebra", "Dog"],
+  OUTPUT_LABELS: ["Caballo", "Cebra", "Perro"],
   
   ACTIVATION: {
-    SIZE: { width: 0.15, height: 1, depth: 0.08 }
+    SIZE: { width: 0.35, height: 1, depth: 0.05 }
   }
 };
 
@@ -168,6 +181,8 @@ const State = {
   renderer: null,
   controls: null,
   layers: {
+    //LA ENTRADA
+    inputImage:[],
     inputChannels: [],
     kernel: null,
     conv1Filters: [],
@@ -180,14 +195,20 @@ const State = {
     flatten: [],
     fcNeurons: [],
     outputClasses: []
+    //CADA AARRAY  TIENE MESHES
   },
+  //AQUI TENGO LAS CONEXIONES O LINEAS
   connections: [],
+  //LAS ANIMACIONES
   signals: [],
+  //LOS LABELS TEXTOS
   htmlLabels: []
 };
 
 // ======== MÓDULO DE CREACIÓN DE ETIQUETAS HTML ========
+
 const LabelModule = {
+
   createHTMLLabel(text, position3D, className = 'layer-label') {
     const label = document.createElement('div');
     label.className = className;
@@ -211,7 +232,7 @@ const LabelModule = {
     
     return label;
   },
-
+  //CAMBIAMOS LAS COORDENADAS EN 3D
   updateHTMLLabelsPosition() {
     if (!State.htmlLabels.length || !State.camera) return;
     
@@ -234,14 +255,14 @@ const LabelModule = {
       label.style.top = `${y - 20}px`;
       
       if (label.className.includes('section')) {
-        label.style.color = '#FFFF00';
-        label.style.fontSize = '14px';
+        label.style.color = '#ff0000ff';
+        label.style.fontSize = '10px';
         label.style.background = 'rgba(0,0,0,0.8)';
         label.style.padding = '4px 8px';
         label.style.borderRadius = '4px';
       } else {
         label.style.color = '#FFFFFF';
-        label.style.fontSize = '11px';
+        label.style.fontSize = '8px';
         label.style.background = 'rgba(0,0,0,0.6)';
         label.style.padding = '2px 6px';
         label.style.borderRadius = '3px';
@@ -253,6 +274,7 @@ const LabelModule = {
 // ======== MÓDULO DE CREACIÓN DE CAPAS ========
 const LayerBuilder = {
   createAllLayers() {
+    this.createInputPrin();
     this.createInputSection();
     this.createConvolution1Section();
     this.createActivationSection();
@@ -264,9 +286,33 @@ const LayerBuilder = {
     this.createOutputSection();
     this.createAllConnections();
   },
+  createInputPrin() {
+    // Label cerca del plano
+    LabelModule.createHTMLLabel("INPUT", 
+      { x: -19, y: 2, z: 0 }, 
+      'section-label'
+    );
+
+    // Plano con textura
+    const geometry = new THREE.PlaneGeometry(3, 3);
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load('http://localhost:3000/imagen/cebra.jpg'); // prueba con esta
+
+    const material = new THREE.MeshBasicMaterial({
+      map: texture,
+      side: THREE.DoubleSide
+    });
+
+    const plane = new THREE.Mesh(geometry, material);
+    plane.position.set(-19, 0, 0);
+    State.scene.add(plane);
+
+    State.layers.inputImage = plane;
+  },
+
 
   createInputSection() {
-    LabelModule.createHTMLLabel("INPUT LAYER", 
+    LabelModule.createHTMLLabel("CONVOLUCION", 
       { x: CONFIG.LAYER_POSITIONS.INPUT_CHANNELS[1].x, y: 2, z: 0 }, 
       'section-label'
     );
@@ -280,11 +326,12 @@ const LayerBuilder = {
     const channelNames = ["R", "G", "B"];
     
     CONFIG.LAYER_POSITIONS.INPUT_CHANNELS.forEach((position, index) => {
+      //AQUI CREAMOS EL CON OX GEOMETRY
       const channel = this.createBoxLayer(
-        CONFIG.LAYER_SIZES.INPUT_CHANNEL,
-        channelColors[index],
-        0.9,
-        position
+        CONFIG.LAYER_SIZES.INPUT_CHANNEL,//TAMAÑO
+        channelColors[index],//COLOR SEGUN EL INDICE
+        0.9,//OPACIDAD
+        position//POSICION
       );
       State.layers.inputChannels.push(channel);
       
@@ -305,10 +352,11 @@ const LayerBuilder = {
     LabelModule.createHTMLLabel("Kernel 3x3", 
       { x: CONFIG.LAYER_POSITIONS.KERNEL.x, y: -0.8, z: 0 }
     );
+    
   },
 
   createConvolution1Section() {
-    LabelModule.createHTMLLabel("CONVOLUTION 1", 
+    LabelModule.createHTMLLabel("CONVOLUCION", 
       { x: CONFIG.LAYER_POSITIONS.CONV1_FILTERS[3].x, y: 2, z: 0 }, 
       'section-label'
     );
@@ -336,7 +384,7 @@ const LayerBuilder = {
       );
     });
     
-    LabelModule.createHTMLLabel("FEATURE MAPS 1", 
+    LabelModule.createHTMLLabel("FEATURE MAPS", 
       { x: CONFIG.LAYER_POSITIONS.FEATURE_MAPS_1[3].x, y: 2, z: 0 }, 
       'section-label'
     );
@@ -353,7 +401,7 @@ const LayerBuilder = {
   },
 
   createActivationSection() {
-    LabelModule.createHTMLLabel("ReLU ACTIVATION", 
+    LabelModule.createHTMLLabel("ReLU ACTIVACION", 
       { x: CONFIG.LAYER_POSITIONS.RELU_1[3].x, y: 2, z: 0 }, 
       'section-label'
     );
@@ -369,7 +417,7 @@ const LayerBuilder = {
       CONFIG.ACTIVATION.SIZE.width,
       CONFIG.ACTIVATION.SIZE.height
     );
-    
+    //NO DEPENDE DE LUCES SIEMPRE VISIBLE
     const material = new THREE.MeshBasicMaterial({
       color: index % 3 === 0 ? CONFIG.COLORS.RELU_ACTIVE : CONFIG.COLORS.RELU_INACTIVE,
       transparent: true,
@@ -392,7 +440,7 @@ const LayerBuilder = {
   },
 
   createPooling1Section() {
-    LabelModule.createHTMLLabel("MAX POOLING 1", 
+    LabelModule.createHTMLLabel("MAX POOLING", 
       { x: CONFIG.LAYER_POSITIONS.POOL_1[3].x, y: 2, z: 0 }, 
       'section-label'
     );
@@ -409,7 +457,7 @@ const LayerBuilder = {
   },
 
   createConvolution2Section() {
-    LabelModule.createHTMLLabel("CONVOLUTION 2", 
+    LabelModule.createHTMLLabel("CONVOLUCION", 
       { x: CONFIG.LAYER_POSITIONS.CONV2_FILTERS[6].x, y: 2, z: 0 }, 
       'section-label'
     );
@@ -451,7 +499,7 @@ const LayerBuilder = {
   },
 
   createPooling2Section() {
-    LabelModule.createHTMLLabel("MAX POOLING 2", 
+    LabelModule.createHTMLLabel("MAX POOLING", 
       { x: CONFIG.LAYER_POSITIONS.POOL_2[6].x, y: 2, z: 0 }, 
       'section-label'
     );
@@ -469,7 +517,7 @@ const LayerBuilder = {
 
   createFlattenSection() {
     LabelModule.createHTMLLabel("FLATTEN", 
-      { x: 6, y: 2, z: 0 }, 
+      { x: 5, y: 2, z: 0 }, 
       'section-label'
     );
     
@@ -544,6 +592,13 @@ const LayerBuilder = {
   },
 
   createAllConnections() {
+    // Conectar la imagen de entrada con cada canal RGB
+  if (State.layers.inputImage) {
+    State.layers.inputChannels.forEach(channel => {
+      this.createConnection(State.layers.inputImage, channel);
+    });
+  }
+
     State.layers.inputChannels.forEach(channel => {
       State.layers.conv1Filters.forEach(filter => {
         this.createConnection(channel, filter);
@@ -622,7 +677,10 @@ const LayerBuilder = {
     State.scene.add(line);
     State.connections.push(line);
   }
+
 };
+
+
 
 // ======== MÓDULO DE ANIMACIÓN DE DATOS ========
 const DataFlowAnimator = {
@@ -635,7 +693,7 @@ const DataFlowAnimator = {
     
     this.isAnimating = true;
     this.updateStatusIndicator(true);
-    this.updateUI("🚀 Iniciando clasificación de imagen...");
+    this.updateUI(" Iniciando clasificación de imagen...");
     this.resetOutputColors();
     
     // Iniciar flujo por cada canal RGB
@@ -663,7 +721,7 @@ const DataFlowAnimator = {
     
     const animateNextChannel = () => {
       if (channelIndex >= channelColors.length) {
-        this.updateUI("✅ Canales RGB procesados. Combinando características...");
+        this.updateUI("Canales RGB procesados. Combinando características...");
         setTimeout(() => {
           this.animateCompleteFlow();
         }, 1000 * this.animationSpeed);
@@ -671,7 +729,7 @@ const DataFlowAnimator = {
       }
       
       const channelColor = channelColors[channelIndex];
-      this.updateUI(`🔴 Procesando canal ${channelColor.name}...`);
+      this.updateUI(`Procesando canal ${channelColor.name}...`);
       
       this.animateKernelOnChannel(channelIndex, () => {
         this.animateChannelToFilters(channelIndex, channelColor.color, () => {
@@ -730,7 +788,7 @@ const DataFlowAnimator = {
   },
 
   animateCompleteFlow() {
-    this.updateUI("🔄 Combinando características y propagando...");
+    this.updateUI("Combinando características y propagando...");
     
     const selectedFeatures = [];
     for (let i = 0; i < 3; i++) {
@@ -980,7 +1038,7 @@ const DataFlowAnimator = {
       pulse();
     }
     
-    this.updateUI("<strong>✅ CLASIFICACIÓN COMPLETA:</strong><br>La imagen ha sido identificada como <span style='color:#00FF00; font-weight:bold;'>ZEBRA</span> 🦓");
+    this.updateUI("<strong> CLASIFICACIÓN COMPLETA:</strong><br>La imagen ha sido identificada como <span style='color:#00FF00; font-weight:bold;'>ZEBRA</span> 🦓");
   },
 
   updateUI(text) {
@@ -991,7 +1049,7 @@ const DataFlowAnimator = {
   }
 };
 
-// ======== MÓDULO DE INICIALIZACIÓN ========// ======== MÓDULO DE INICIALIZACIÓN ========
+// ======== MÓDULO DE INICIALIZACIÓN ========
 const InitializationModule = {
   init() {
     this.createScene();
@@ -1054,7 +1112,7 @@ const InitializationModule = {
   },
 
   addLights() {
-    // Configuración de luces compatible con r71
+    // Configuración de luces 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(20, 20, 20);
     directionalLight.castShadow = true;
@@ -1152,7 +1210,7 @@ const AnimationLoop = {
 const UIModule = {
   init() {
     this.setupEventHandlers();
-    console.log('✅ UI Module inicializado');
+    console.log(' UI Module inicializado');
   },
 
   setupEventHandlers() {
@@ -1174,8 +1232,6 @@ const UIModule = {
       });
     }
     
-    // Botón de información (ya manejado en HTML)
-    // No necesita acción adicional aquí
   }
 };
 
@@ -1220,7 +1276,6 @@ class CNNVisualizer {
       console.log('  • Fully Connected: 8 neuronas');
       console.log('  • Output: 3 clases');
       
-      // Actualizar estado inicial
       DataFlowAnimator.updateStatusIndicator(false);
       
     } catch (error) {
@@ -1265,17 +1320,14 @@ document.addEventListener('DOMContentLoaded', () => {
       display: block;
     }
     
-    /* Asegurar que los controles estén por encima del canvas */
     .controls-panel {
       z-index: 1000 !important;
     }
-    
-    /* Mejorar visibilidad de etiquetas 3D */
+  
     .layer-label, .section-label {
       z-index: 999 !important;
     }
     
-    /* Animación de carga */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -1287,6 +1339,5 @@ document.addEventListener('DOMContentLoaded', () => {
   `;
   document.head.appendChild(style);
   
-  // Iniciar la aplicación
   new CNNVisualizer();
 });
